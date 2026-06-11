@@ -1,0 +1,64 @@
+{
+  "themes": ["Économie", "Environnement", "Politique", "Justice", "Famille", "Humanité"],
+  "supports": [
+    { "nom": "Presse",      "couleur": "#8A6D1F" },
+    { "nom": "Littérature", "couleur": "#1F4A38" },
+    { "nom": "Essai",       "couleur": "#3E5A7A" },
+    { "nom": "Cinéma",      "couleur": "#7A2E3E" },
+    { "nom": "Série",       "couleur": "#B3422F" },
+    { "nom": "Podcast",     "couleur": "#5C4A8A" },
+    { "nom": "Peinture",    "couleur": "#2E6A6A" },
+    { "nom": "Exposition",  "couleur": "#6E6E2E" },
+    { "nom": "Musique",     "couleur": "#8A4A1F" }
+  ],
+  "references": [
+    {
+      "titre": "Les Raisins de la colère",
+      "auteur": "John Steinbeck",
+      "date": "1939",
+      "support": "Littérature",
+      "themes": ["Économie", "Famille", "Humanité"],
+      "apport": "La Grande Dépression vue à hauteur d'une famille : crise économique, exode, dignité des plus pauvres face à un système qui les broie."
+    },
+    {
+      "titre": "Germinal",
+      "auteur": "Émile Zola",
+      "date": "1885",
+      "support": "Littérature",
+      "themes": ["Économie", "Humanité"],
+      "apport": "La condition ouvrière au XIXe siècle, la naissance des luttes sociales et la question du capital contre le travail."
+    },
+    {
+      "titre": "Douze hommes en colère",
+      "auteur": "Sidney Lumet",
+      "date": "1957",
+      "support": "Cinéma",
+      "themes": ["Justice"],
+      "apport": "Le doute raisonnable et la délibération : comment la justice se construit dans la confrontation des préjugés de chacun."
+    },
+    {
+      "titre": "Don't Look Up",
+      "auteur": "Adam McKay",
+      "date": "2021",
+      "support": "Cinéma",
+      "themes": ["Environnement", "Politique"],
+      "apport": "Satire du déni climatique : l'incapacité du politique et des médias à traiter une menace scientifiquement établie."
+    },
+    {
+      "titre": "La Liberté guidant le peuple",
+      "auteur": "Eugène Delacroix",
+      "date": "1830",
+      "support": "Peinture",
+      "themes": ["Politique"],
+      "apport": "Allégorie de la révolution de 1830, devenue image universelle du peuple en lutte pour la liberté."
+    },
+    {
+      "titre": "Affaires sensibles",
+      "auteur": "Fabrice Drouelle — France Inter",
+      "date": "depuis 2014",
+      "support": "Podcast",
+      "themes": ["Justice", "Politique"],
+      "apport": "Grandes affaires judiciaires et politiques racontées : une mine d'exemples concrets et datés."
+    }
+  ]
+}

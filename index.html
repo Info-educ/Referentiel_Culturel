@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Référentiel culturel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F1E8;
+    --card:#FDFBF5;
+    --ink:#1C1A17;
+    --ink-soft:#5C564C;
+    --header:#1F4A38;
+    --header-text:#F5F1E8;
+    --stamp:#B3422F;
+    --line:#D8D0C0;
+    --field:#FFFFFF;
+    --radius:10px;
+    font-size:16px;
+  }
+  body.dark{
+    --paper:#1B1F1D;
+    --card:#262C29;
+    --ink:#EDEAE2;
+    --ink-soft:#A8A398;
+    --stamp:#D96A55;
+    --line:#3A423E;
+    --field:#1F2522;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Public Sans",system-ui,sans-serif;
+    line-height:1.55;
+    min-height:100vh;
+    transition:background .25s,color .25s;
+  }
+  button{font:inherit;cursor:pointer}
+  /* ---------- En-tête ---------- */
+  header{
+    background:var(--header);
+    color:var(--header-text);
+    padding:1rem 1rem .8rem;
+    display:flex;
+    align-items:flex-start;
+    gap:.5rem;
+    transition:background .25s;
+  }
+  header .titles{flex:1;min-width:0}
+  header h1{
+    font-family:"Fraunces",serif;
+    font-weight:900;
+    font-size:1.35rem;
+  }
+  header p{font-size:.72rem;opacity:.75;margin-top:.1rem}
+  .hbtn{
+    flex:0 0 auto;
+    border:1.5px solid var(--header-text);
+    background:transparent;
+    color:var(--header-text);
+    border-radius:999px;
+    padding:.32rem .7rem;
+    font-size:.8rem;
+    font-weight:600;
+  }
+  .hbtn.on{background:var(--stamp);border-color:var(--stamp);color:#fff}
+  .search-wrap{background:var(--header);padding:0 1rem .9rem;transition:background .25s}
+  .search-wrap input{
+    width:100%;
+    padding:.6rem .9rem;
+    border:none;
+    border-radius:var(--radius);
+    font:inherit;font-size:.95rem;
+    background:var(--paper);
+    color:var(--ink);
+  }
+  .search-wrap input:focus{outline:3px solid var(--stamp)}
+  /* ---------- Panneau apparence ---------- */
+  .appearance{
+    background:var(--card);
+    border-bottom:1px solid var(--line);
+    padding:.9rem 1rem;
+    display:none;
+  }
+  .appearance.open{display:block}
+  .appearance h2{
+    font-family:"Fraunces",serif;
+    font-size:1rem;color:var(--ink);
+    margin-bottom:.5rem;
+  }
+  .appearance .row{
+    display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;
+    margin-bottom:.7rem;
+  }
+  .appearance .row:last-child{margin-bottom:0}
+  .appearance .lbl{font-size:.8rem;font-weight:600;color:var(--ink-soft);min-width:8rem}
+  .mode-btn{
+    border:1.5px solid var(--ink-soft);
+    background:transparent;color:var(--ink);
+    border-radius:999px;
+    padding:.3rem .8rem;font-size:.82rem;font-weight:600;
+  }
+  .mode-btn.active{border-color:var(--stamp);background:var(--stamp);color:#fff}
+  .swatch{
+    width:2rem;height:2rem;border-radius:50%;
+    border:2px solid var(--line);
+    padding:0;
+    margin-right:.3rem;
+  }
+  .swatch.active{border:3px solid var(--stamp)}
+  .sync-input{
+    flex:1;min-width:10rem;
+    padding:.45rem .7rem;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font:inherit;font-size:.88rem;
+    background:var(--field);color:var(--ink);
+  }
+  .hbtn.sync-ok{border-color:#7FBF8E;color:#CFEBD6}
+  .hbtn.sync-err{border-color:#E08A7A;color:#F6D5CD}
+  .inline-lbl{
+    display:block;font-size:.75rem;font-weight:600;
+    color:var(--ink-soft);margin:.55rem 0 .15rem;
+  }
+  /* ---------- Onglets thèmes ---------- */
+  nav{
+    position:sticky;top:0;z-index:10;
+    background:var(--paper);
+    border-bottom:1px solid var(--line);
+    display:flex;gap:.4rem;
+    overflow-x:auto;
+    padding:.6rem 1rem;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    transition:background .25s;
+  }
+  nav::-webkit-scrollbar{display:none}
+  .tab{
+    flex:0 0 auto;
+    border:1.5px solid var(--ink);
+    background:transparent;
+    color:var(--ink);
+    font-weight:600;font-size:.85rem;
+    padding:.35rem .8rem;
+    border-radius:999px;
+    white-space:nowrap;
+  }
+  .tab .count{font-weight:400;opacity:.65;font-size:.75rem}
+  .tab.active{background:var(--ink);color:var(--paper)}
+  .tab.add{border-style:dashed;font-weight:700}
+  .tab:focus-visible{outline:3px solid var(--stamp);outline-offset:2px}
+  /* ---------- Contenu ---------- */
+  main{max-width:760px;margin:0 auto;padding:1rem 1rem 4rem}
+  .theme-head{display:flex;align-items:center;gap:.5rem;margin:.5rem 0 1rem;flex-wrap:wrap}
+  .theme-title{
+    font-family:"Fraunces",serif;
+    font-weight:700;font-size:1.5rem;
+    color:var(--ink);
+    flex:1;
+  }
+  .move-btn{
+    border:1px solid var(--line);
+    background:var(--card);color:var(--ink);
+    border-radius:6px;
+    padding:.2rem .55rem;
+    font-size:.85rem;
+    line-height:1.2;
+  }
+  .move-btn:disabled{opacity:.3;cursor:default}
+  details.support{
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    background:var(--card);
+    margin-bottom:.7rem;
+    overflow:hidden;
+  }
+  details.support summary{
+    list-style:none;cursor:pointer;
+    display:flex;align-items:center;gap:.6rem;
+    padding:.75rem .9rem;
+    font-weight:600;font-size:.95rem;
+    user-select:none;
+  }
+  details.support summary::-webkit-details-marker{display:none}
+  details.support summary .chevron{
+    margin-left:auto;
+    transition:transform .2s;
+    color:var(--ink-soft);font-size:.8rem;
+  }
+  details.support[open] summary .chevron{transform:rotate(90deg)}
+  .support-dot{width:.7rem;height:.7rem;border-radius:50%;flex:0 0 auto}
+  .support-count{color:var(--ink-soft);font-weight:400;font-size:.8rem}
+  .cards{padding:.1rem .7rem .7rem}
+  /* ---------- Fiche repliable ---------- */
+  .card{
+    position:relative;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:8px;
+    margin:.5rem 0;
+    box-shadow:0 1px 2px rgba(0,0,0,.08);
+    overflow:hidden;
+    display:flex;
+  }
+  .card::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+    background:var(--spine,#1F4A38);
+  }
+  .card-main{flex:1;min-width:0}
+  .card-head{
+    width:100%;
+    background:none;border:none;
+    color:var(--ink);
+    text-align:left;
+    padding:.65rem .9rem .65rem 1.1rem;
+    display:flex;align-items:baseline;gap:.45rem;flex-wrap:wrap;
+  }
+  .card-head h3{
+    font-family:"Fraunces",serif;
+    font-weight:700;font-size:1rem;line-height:1.3;
+  }
+  .card-head .auteur{
+    font-size:.82rem;color:var(--ink-soft);font-style:italic;
+  }
+  .card-head .date{
+    margin-left:auto;
+    font-size:.78rem;
+    font-weight:600;
+    color:var(--ink-soft);
+    flex:0 0 auto;
+  }
+  .card-body{display:none;padding:0 .9rem .8rem 1.1rem}
+  .card.open .card-body{display:block}
+  .card .apport{font-size:.9rem}
+  .card .tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.55rem}
+  .tag{
+    font-size:.7rem;font-weight:600;letter-spacing:.03em;text-transform:uppercase;
+    color:var(--stamp);
+    border:1px solid var(--stamp);
+    border-radius:3px;padding:.05rem .4rem;
+    background:transparent;
+  }
+  .tag.support-tag{color:#fff;border:none}
+  /* colonne de réorganisation en mode édition */
+  .card-reorder{
+    display:flex;flex-direction:column;justify-content:center;gap:.25rem;
+    padding:.4rem .5rem .4rem 0;
+  }
+  /* ---------- Mode édition ---------- */
+  .del-btn{
+    border:1px solid var(--stamp);
+    background:transparent;color:var(--stamp);
+    border-radius:6px;
+    font-size:.75rem;font-weight:600;
+    padding:.15rem .5rem;
+    margin-top:.6rem;
+  }
+  .del-inline{
+    border:none;background:transparent;color:var(--stamp);
+    font-size:1rem;line-height:1;padding:.1rem .3rem;
+  }
+  .edit-bar{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 .6rem}
+  .btn{
+    border:1.5px solid var(--ink);
+    background:var(--ink);color:var(--paper);
+    border-radius:8px;
+    padding:.45rem .9rem;
+    font-size:.85rem;font-weight:600;
+  }
+  .btn.ghost{background:transparent;color:var(--ink)}
+  .hint{
+    font-size:.78rem;color:var(--ink-soft);
+    margin:0 0 1rem;
+  }
+  /* formulaire */
+  .form{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:1rem;
+    margin-bottom:1rem;
+  }
+  .form h2{
+    font-family:"Fraunces",serif;font-size:1.1rem;
+    color:var(--ink);margin-bottom:.7rem;
+  }
+  .form label{
+    display:block;font-size:.8rem;font-weight:600;
+    margin:.6rem 0 .2rem;color:var(--ink-soft);
+  }
+  .form input[type=text],.form textarea,.form select{
+    width:100%;
+    padding:.5rem .7rem;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font:inherit;font-size:.92rem;
+    background:var(--field);color:var(--ink);
+  }
+  .form textarea{min-height:4.5rem;resize:vertical}
+  .checks{display:flex;flex-wrap:wrap;gap:.35rem .8rem;margin-top:.3rem}
+  .checks label{
+    display:flex;align-items:center;gap:.3rem;
+    font-weight:500;margin:0;font-size:.85rem;color:var(--ink);
+  }
+  .form-actions{display:flex;gap:.5rem;margin-top:.9rem}
+  .empty{
+    text-align:center;color:var(--ink-soft);
+    padding:2.5rem 1rem;font-size:.95rem;
+  }
+  .results-label{font-size:.85rem;color:var(--ink-soft);margin:.4rem 0 .8rem}
+  footer{text-align:center;font-size:.75rem;color:var(--ink-soft);padding:1rem}
+  .notice{
+    background:rgba(194,138,31,.15);
+    border:1px solid #C28A1F;
+    border-radius:8px;padding:.6rem .8rem;
+    font-size:.8rem;margin-bottom:1rem;
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="titles">
+    <h1>Référentiel culturel</h1>
+    <p>Banque personnelle de références</p>
+  </div>
+  <button class="hbtn" id="syncToggle" title="Synchronisation">⇅</button>
+  <button class="hbtn" id="appearanceToggle" title="Apparence">🎨</button>
+  <button class="hbtn" id="editToggle">✎ Modifier</button>
+</header>
+<div class="search-wrap">
+  <input type="search" id="search" placeholder="Rechercher un titre, un auteur, un mot-clé…" aria-label="Rechercher">
+</div>
+
+<div class="appearance" id="syncPanel">
+  <h2>Synchronisation GitHub</h2>
+  <p class="hint" style="margin-bottom:.6rem">Les données sont enregistrées dans un fichier <strong>data.json</strong> de ton dépôt : chaque modification faite ici est envoyée sur GitHub, et chaque appareil récupère la dernière version à l'ouverture. Crée un token « fine-grained » limité à ce seul dépôt (Contents : Read and write).</p>
+  <div class="row"><span class="lbl">Propriétaire</span><input type="text" id="syncOwner" class="sync-input" placeholder="ton-pseudo-github" autocomplete="off"></div>
+  <div class="row"><span class="lbl">Dépôt</span><input type="text" id="syncRepo" class="sync-input" placeholder="referentiel-culturel" autocomplete="off"></div>
+  <div class="row"><span class="lbl">Branche</span><input type="text" id="syncBranch" class="sync-input" placeholder="main" autocomplete="off"></div>
+  <div class="row"><span class="lbl">Token</span><input type="password" id="syncToken" class="sync-input" placeholder="github_pat_…" autocomplete="off"></div>
+  <div class="row">
+    <button class="btn" id="btnSyncSave">Activer la synchronisation</button>
+    <button class="btn ghost" id="btnSyncOff">Désactiver</button>
+  </div>
+  <div class="row"><span id="syncStatus" class="hint" style="margin:0"></span></div>
+</div>
+
+<div class="appearance" id="appearancePanel">
+  <h2>Apparence</h2>
+  <div class="row">
+    <span class="lbl">Mode</span>
+    <button class="mode-btn" id="modeLight">☀️ Clair</button>
+    <button class="mode-btn" id="modeDark">🌙 Sombre</button>
+  </div>
+  <div class="row">
+    <span class="lbl">Couleur du fond</span>
+    <span id="bgSwatches"></span>
+  </div>
+  <div class="row">
+    <span class="lbl">Couleur de l'entête</span>
+    <span id="headerSwatches"></span>
+  </div>
+</div>
+
+<nav id="tabs" aria-label="Thèmes"></nav>
+
+<main id="content"></main>
+
+<footer id="footer"></footer>
+
+<input type="file" id="importFile" accept=".json" style="display:none">
+
+<script>
+/* ============================================================
+   DONNÉES PAR DÉFAUT — utilisées au tout premier chargement.
+   Ensuite tout est géré directement dans le site et sauvegardé
+   dans le navigateur. Exporter/Importer (JSON) pour transférer
+   d'un appareil à l'autre ou faire une sauvegarde.
+   ------------------------------------------------------------
+   L'ordre des références dans chaque support = leur ordre dans
+   la liste (modifiable dans le site avec les flèches ▲▼).
+   "date" est un champ libre : année, mois+année, période…
+   ============================================================ */
+
+const DEFAULT_DATA = {
+  themes: ["Économie","Environnement","Politique","Justice","Famille","Humanité"],
+  supports: [
+    { nom: "Presse",      couleur: "#8A6D1F" },
+    { nom: "Littérature", couleur: "#1F4A38" },
+    { nom: "Essai",       couleur: "#3E5A7A" },
+    { nom: "Cinéma",      couleur: "#7A2E3E" },
+    { nom: "Série",       couleur: "#B3422F" },
+    { nom: "Podcast",     couleur: "#5C4A8A" },
+    { nom: "Peinture",    couleur: "#2E6A6A" },
+    { nom: "Exposition",  couleur: "#6E6E2E" },
+    { nom: "Musique",     couleur: "#8A4A1F" }
+  ],
+  references: [
+    {
+      titre: "Les Raisins de la colère",
+      auteur: "John Steinbeck",
+      date: "1939",
+      support: "Littérature",
+      themes: ["Économie","Famille","Humanité"],
+      apport: "La Grande Dépression vue à hauteur d'une famille : crise économique, exode, dignité des plus pauvres face à un système qui les broie."
+    },
+    {
+      titre: "Germinal",
+      auteur: "Émile Zola",
+      date: "1885",
+      support: "Littérature",
+      themes: ["Économie","Humanité"],
+      apport: "La condition ouvrière au XIXe siècle, la naissance des luttes sociales et la question du capital contre le travail."
+    },
+    {
+      titre: "Douze hommes en colère",
+      auteur: "Sidney Lumet",
+      date: "1957",
+      support: "Cinéma",
+      themes: ["Justice"],
+      apport: "Le doute raisonnable et la délibération : comment la justice se construit dans la confrontation des préjugés de chacun."
+    },
+    {
+      titre: "Don't Look Up",
+      auteur: "Adam McKay",
+      date: "2021",
+      support: "Cinéma",
+      themes: ["Environnement","Politique"],
+      apport: "Satire du déni climatique : l'incapacité du politique et des médias à traiter une menace scientifiquement établie."
+    },
+    {
+      titre: "La Liberté guidant le peuple",
+      auteur: "Eugène Delacroix",
+      date: "1830",
+      support: "Peinture",
+      themes: ["Politique"],
+      apport: "Allégorie de la révolution de 1830, devenue image universelle du peuple en lutte pour la liberté."
+    },
+    {
+      titre: "Affaires sensibles",
+      auteur: "Fabrice Drouelle — France Inter",
+      date: "depuis 2014",
+      support: "Podcast",
+      themes: ["Justice","Politique"],
+      apport: "Grandes affaires judiciaires et politiques racontées : une mine d'exemples concrets et datés."
+    }
+  ]
+};
+
+/* Couleurs de fond proposées (pastels) */
+const BACKGROUNDS = [
+  { nom: "Crème",       light: "#F7F1E1", dark: "#23211A" },
+  { nom: "Lin",         light: "#F2EADA", dark: "#241F17" },
+  { nom: "Rose poudré", light: "#F7E3E3", dark: "#261C1C" },
+  { nom: "Pêche",       light: "#FAE7D7", dark: "#271E16" },
+  { nom: "Jaune pâle",  light: "#F8F0CF", dark: "#252214" },
+  { nom: "Vert d'eau",  light: "#DFF0E2", dark: "#192319" },
+  { nom: "Menthe",      light: "#DCF1EA", dark: "#16231F" },
+  { nom: "Bleu pastel", light: "#DEEBF6", dark: "#172029" },
+  { nom: "Bleu gris",   light: "#E4EAF0", dark: "#1B2026" },
+  { nom: "Lavande",     light: "#E9E2F4", dark: "#1F1B28" },
+  { nom: "Lilas",       light: "#F0E4EF", dark: "#241C24" },
+  { nom: "Gris perle",  light: "#ECECE8", dark: "#1E1E1C" }
+];
+
+/* Couleurs d'entête proposées : tons pastel soutenus,
+   plus foncés que les fonds mais sans être sombres */
+const HEADERS = [
+  { nom: "Sauge",       couleur: "#74937F" },
+  { nom: "Vert lichen", couleur: "#5E8468" },
+  { nom: "Bleu canard", couleur: "#4E8290" },
+  { nom: "Bleu ardoise",couleur: "#5F7E9E" },
+  { nom: "Bleu gris",   couleur: "#7A8A9C" },
+  { nom: "Lavande",     couleur: "#8579A8" },
+  { nom: "Mauve",       couleur: "#9A6E92" },
+  { nom: "Vieux rose",  couleur: "#B57484" },
+  { nom: "Corail",      couleur: "#C97F66" },
+  { nom: "Terracotta",  couleur: "#B0765A" },
+  { nom: "Ocre",        couleur: "#A98C4B" },
+  { nom: "Taupe",       couleur: "#8C7B6B" }
+];
+
+/* ============================================================
+   MOTEUR DU SITE — ne rien modifier en dessous
+   ============================================================ */
+
+const STORE_KEY = "referentiel-culturel-v1";
+const PREF_KEY = "referentiel-culturel-prefs";
+let DATA, PREFS;
+let storageOK = true;
+
+function loadAll(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    DATA = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULT_DATA));
+    const p = localStorage.getItem(PREF_KEY);
+    PREFS = p ? JSON.parse(p) : { mode: "light", bg: "Crème", header: "Sauge" };
+  }catch(e){
+    storageOK = false;
+    DATA = JSON.parse(JSON.stringify(DEFAULT_DATA));
+    PREFS = { mode: "light", bg: "Crème", header: "Sauge" };
+  }
+  if (!PREFS.header || !HEADERS.some(h => h.nom === PREFS.header)) PREFS.header = "Sauge";
+  if (!PREFS.bg || !BACKGROUNDS.some(b => b.nom === PREFS.bg)) PREFS.bg = "Crème";
+  /* migration : champ date présent, anciennes étoiles supprimées */
+  DATA.references.forEach(r => {
+    if (typeof r.date !== "string") r.date = "";
+    delete r.importance;
+  });
+}
+function saveData(){
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(DATA)); }catch(e){ storageOK = false; }
+  schedulePush();
+}
+function savePrefs(){ try{ localStorage.setItem(PREF_KEY, JSON.stringify(PREFS)); }catch(e){} }
+
+/* ============================================================
+   SYNCHRONISATION GITHUB
+   Le fichier data.json du dépôt est la source de vérité :
+   - à l'ouverture, on récupère sa dernière version ;
+   - à chaque modification, on la renvoie (avec un léger délai
+     pour grouper les changements rapprochés).
+   Le token est conservé uniquement sur l'appareil (localStorage).
+   ============================================================ */
+const SYNC_KEY = "referentiel-culturel-sync";
+let SYNC = { owner:"", repo:"", branch:"main", token:"" };
+try{ const s = localStorage.getItem(SYNC_KEY); if (s) SYNC = Object.assign(SYNC, JSON.parse(s)); }catch(e){}
+let remoteSha = null;
+let pushTimer = null;
+let syncState = "off"; /* off | ok | saving | error */
+
+const syncConfigured = () => SYNC.owner && SYNC.repo && SYNC.token;
+const ghUrl = () => `https://api.github.com/repos/${SYNC.owner}/${SYNC.repo}/contents/data.json`;
+const ghHeaders = () => ({ "Authorization": "Bearer " + SYNC.token, "Accept": "application/vnd.github+json" });
+const toB64 = s => { const b = new TextEncoder().encode(s); let o = ""; b.forEach(c => o += String.fromCharCode(c)); return btoa(o); };
+const fromB64 = s => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\s/g,"")), c => c.charCodeAt(0)));
+
+function setSyncState(state, msg){
+  syncState = state;
+  const btn = document.getElementById("syncToggle");
+  btn.classList.toggle("sync-ok", state === "ok");
+  btn.classList.toggle("sync-err", state === "error");
+  btn.textContent = state === "saving" ? "…" : "⇅";
+  const st = document.getElementById("syncStatus");
+  if (st) st.textContent = msg || (
+    state === "ok" ? "✓ Synchronisé avec GitHub." :
+    state === "saving" ? "Enregistrement en cours…" :
+    state === "error" ? "⚠️ Erreur de synchronisation." :
+    "Synchronisation désactivée : les données restent sur cet appareil.");
+}
+
+async function ghPull(){
+  const r = await fetch(ghUrl() + "?ref=" + encodeURIComponent(SYNC.branch || "main"), { headers: ghHeaders() });
+  if (r.status === 404) return { missing: true };
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  const j = await r.json();
+  remoteSha = j.sha;
+  return { data: JSON.parse(fromB64(j.content)) };
+}
+
+async function ghPush(retry){
+  if (!syncConfigured()) return;
+  setSyncState("saving");
+  const body = {
+    message: "Mise à jour du référentiel — " + new Date().toLocaleString("fr-FR"),
+    content: toB64(JSON.stringify(DATA, null, 2)),
+    branch: SYNC.branch || "main"
+  };
+  if (remoteSha) body.sha = remoteSha;
+  try{
+    const r = await fetch(ghUrl(), { method: "PUT", headers: ghHeaders(), body: JSON.stringify(body) });
+    if ((r.status === 409 || r.status === 422) && !retry){
+      /* le fichier a changé entre-temps : on récupère son empreinte et on réessaie */
+      const p = await ghPull().catch(() => null);
+      if (p) return ghPush(true);
+    }
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const j = await r.json();
+    remoteSha = j.content.sha;
+    setSyncState("ok");
+  }catch(e){
+    setSyncState("error", "⚠️ Échec de l'envoi vers GitHub (" + e.message + "). Tes modifications restent sur cet appareil ; elles repartiront au prochain changement ou rechargement.");
+  }
+}
+
+function schedulePush(){
+  if (!syncConfigured()) return;
+  clearTimeout(pushTimer);
+  pushTimer = setTimeout(() => ghPush(false), 1200);
+}
+
+async function initSync(){
+  if (!syncConfigured()){ setSyncState("off"); return; }
+  setSyncState("saving", "Récupération des données depuis GitHub…");
+  try{
+    const res = await ghPull();
+    if (res.missing){
+      /* premier usage : on crée data.json avec les données locales */
+      remoteSha = null;
+      await ghPush(false);
+    } else {
+      DATA = res.data;
+      DATA.references.forEach(r => { if (typeof r.date !== "string") r.date = ""; delete r.importance; });
+      try{ localStorage.setItem(STORE_KEY, JSON.stringify(DATA)); }catch(e){}
+      currentTheme = DATA.themes.includes(currentTheme) ? currentTheme : (DATA.themes[0] || null);
+      setSyncState("ok");
+      render();
+    }
+  }catch(e){
+    setSyncState("error", "⚠️ Impossible de joindre GitHub (" + e.message + "). Vérifie le propriétaire, le dépôt et le token. En attendant, la version locale de cet appareil est affichée.");
+  }
+}
+
+loadAll();
+
+const tabsEl = document.getElementById("tabs");
+const contentEl = document.getElementById("content");
+const searchEl = document.getElementById("search");
+const footerEl = document.getElementById("footer");
+const editToggle = document.getElementById("editToggle");
+const appearanceToggle = document.getElementById("appearanceToggle");
+const appearancePanel = document.getElementById("appearancePanel");
+const bgSwatchesEl = document.getElementById("bgSwatches");
+const headerSwatchesEl = document.getElementById("headerSwatches");
+const modeLight = document.getElementById("modeLight");
+const modeDark = document.getElementById("modeDark");
+const importFile = document.getElementById("importFile");
+
+let currentTheme = DATA.themes[0] || null;
+let editMode = false;
+let showForm = false;
+const openCards = new Set();
+const openSupports = new Set();
+let editingRef = null; /* id de la fiche en cours de modification */
+
+const palette = ["#8A6D1F","#1F4A38","#3E5A7A","#7A2E3E","#B3422F","#5C4A8A","#2E6A6A","#6E6E2E","#8A4A1F","#777"];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const supportColor = nom => (DATA.supports.find(s => s.nom === nom)||{}).couleur || "#1F4A38";
+const refsOfTheme = t => DATA.references.filter(r => r.themes.includes(t));
+const refId = r => r.titre + "||" + r.auteur;
+
+/* ---------- Apparence ---------- */
+function applyAppearance(){
+  document.body.classList.toggle("dark", PREFS.mode === "dark");
+  const bg = BACKGROUNDS.find(b => b.nom === PREFS.bg) || BACKGROUNDS[0];
+  document.body.style.setProperty("--paper", PREFS.mode === "dark" ? bg.dark : bg.light);
+  const hd = HEADERS.find(h => h.nom === PREFS.header) || HEADERS[0];
+  document.body.style.setProperty("--header", hd.couleur);
+  modeLight.classList.toggle("active", PREFS.mode === "light");
+  modeDark.classList.toggle("active", PREFS.mode === "dark");
+  renderSwatches();
+}
+function renderSwatches(){
+  bgSwatchesEl.innerHTML = "";
+  BACKGROUNDS.forEach(b => {
+    const s = document.createElement("button");
+    s.className = "swatch" + (PREFS.bg === b.nom ? " active" : "");
+    s.style.background = PREFS.mode === "dark" ? b.dark : b.light;
+    s.title = b.nom;
+    s.setAttribute("aria-label", "Fond " + b.nom);
+    s.onclick = () => { PREFS.bg = b.nom; savePrefs(); applyAppearance(); };
+    bgSwatchesEl.appendChild(s);
+  });
+  headerSwatchesEl.innerHTML = "";
+  HEADERS.forEach(h => {
+    const s = document.createElement("button");
+    s.className = "swatch" + (PREFS.header === h.nom ? " active" : "");
+    s.style.background = h.couleur;
+    s.title = h.nom;
+    s.setAttribute("aria-label", "Entête " + h.nom);
+    s.onclick = () => { PREFS.header = h.nom; savePrefs(); applyAppearance(); };
+    headerSwatchesEl.appendChild(s);
+  });
+}
+modeLight.onclick = () => { PREFS.mode = "light"; savePrefs(); applyAppearance(); };
+modeDark.onclick = () => { PREFS.mode = "dark"; savePrefs(); applyAppearance(); };
+appearanceToggle.onclick = () => {
+  appearancePanel.classList.toggle("open");
+  appearanceToggle.classList.toggle("on", appearancePanel.classList.contains("open"));
+};
+
+/* ---------- Onglets ---------- */
+function renderTabs(){
+  tabsEl.innerHTML = "";
+  DATA.themes.forEach(theme => {
+    const b = document.createElement("button");
+    b.className = "tab" + (theme === currentTheme ? " active" : "");
+    b.innerHTML = `${esc(theme)} <span class="count">${refsOfTheme(theme).length}</span>`;
+    b.onclick = () => { currentTheme = theme; searchEl.value = ""; showForm = false; render(); };
+    tabsEl.appendChild(b);
+  });
+  if (editMode){
+    const add = document.createElement("button");
+    add.className = "tab add";
+    add.textContent = "+ Thème";
+    add.onclick = addTheme;
+    tabsEl.appendChild(add);
+  }
+}
+
+/* ---------- Fiches ---------- */
+function cardHTML(ref, list){
+  const id = refId(ref);
+  const open = openCards.has(id);
+  const tags = ref.themes.map(t => `<span class="tag">${esc(t)}</span>`).join("");
+  const date = ref.date ? `<span class="date">${esc(ref.date)}</span>` : "";
+  let body;
+  if (editMode && editingRef === id){
+    /* édition en place : titre, auteur, date, résumé */
+    body = `
+      <label class="inline-lbl" for="eTitre">Titre</label>
+      <input type="text" id="eTitre" class="sync-input" style="width:100%" value="${esc(ref.titre)}">
+      <label class="inline-lbl" for="eAuteur">Auteur / réalisateur / média</label>
+      <input type="text" id="eAuteur" class="sync-input" style="width:100%" value="${esc(ref.auteur)}">
+      <label class="inline-lbl" for="eDate">Date</label>
+      <input type="text" id="eDate" class="sync-input" style="width:100%" value="${esc(ref.date)}">
+      <label class="inline-lbl" for="eApport">Résumé / apport</label>
+      <textarea id="eApport" class="sync-input" style="width:100%;min-height:4.5rem;resize:vertical">${esc(ref.apport)}</textarea>
+      <div class="form-actions">
+        <button class="btn" data-saveedit="${esc(id)}">Enregistrer</button>
+        <button class="btn ghost" data-canceledit="1">Annuler</button>
+      </div>`;
+  } else {
+    const editBtns = editMode ? `
+      <button class="del-btn" style="border-color:var(--ink-soft);color:var(--ink)" data-editref="${esc(id)}">✎ Modifier cette référence</button>
+      <button class="del-btn" data-del="${esc(id)}">Supprimer cette référence</button>` : "";
+    body = `
+      <div class="apport">${esc(ref.apport)}</div>
+      <div class="tags">
+        <span class="tag support-tag" style="background:${supportColor(ref.support)}">${esc(ref.support)}</span>
+        ${tags}
+      </div>
+      ${editBtns}`;
+  }
+  let reorder = "";
+  if (editMode && list){
+    const idx = list.findIndex(r => refId(r) === id);
+    reorder = `<div class="card-reorder">
+      <button class="move-btn" data-up="${esc(id)}" ${idx === 0 ? "disabled" : ""} aria-label="Monter">▲</button>
+      <button class="move-btn" data-down="${esc(id)}" ${idx === list.length-1 ? "disabled" : ""} aria-label="Descendre">▼</button>
+    </div>`;
+  }
+  return `<article class="card ${open ? "open" : ""}" style="--spine:${supportColor(ref.support)}">
+    <div class="card-main">
+      <button class="card-head" data-toggle="${esc(id)}" aria-expanded="${open}">
+        <h3>${esc(ref.titre)}</h3>
+        <span class="auteur">${esc(ref.auteur)}</span>
+        ${date}
+      </button>
+      <div class="card-body">
+        ${body}
+      </div>
+    </div>
+    ${reorder}
+  </article>`;
+}
+
+/* ---------- Vue thème ---------- */
+function renderTheme(){
+  let html = "";
+  if (!storageOK){
+    html += `<div class="notice">⚠️ La sauvegarde automatique n'est pas disponible dans cet aperçu. Une fois le site ouvert dans ton navigateur ou hébergé, tout est conservé automatiquement.</div>`;
+  }
+  if (editMode){
+    html += `<div class="edit-bar">
+      <button class="btn" id="btnAddRef">+ Ajouter une référence</button>
+      <button class="btn ghost" id="btnAddSupport">+ Support</button>
+      <button class="btn ghost" id="btnExport">⬇ Exporter (JSON)</button>
+      <button class="btn ghost" id="btnImport">⬆ Importer</button>
+    </div>
+    <div class="hint">Classe tes références avec les flèches ▲▼ (les plus importantes en haut). Déplace le thème dans la barre d'onglets avec ◀ ▶.</div>`;
+  }
+  if (showForm) html += formHTML();
+
+  if (!currentTheme){
+    html += `<div class="empty">Aucun thème. Active le mode Modifier puis « + Thème ».</div>`;
+  } else {
+    const ti = DATA.themes.indexOf(currentTheme);
+    const moveTheme = editMode ? `
+      <button class="move-btn" id="btnThemeLeft" ${ti === 0 ? "disabled" : ""} aria-label="Déplacer le thème vers la gauche">◀</button>
+      <button class="move-btn" id="btnThemeRight" ${ti === DATA.themes.length-1 ? "disabled" : ""} aria-label="Déplacer le thème vers la droite">▶</button>
+      <button class="del-btn" id="btnDelTheme" style="margin-top:0">Supprimer ce thème</button>` : "";
+    html += `<div class="theme-head">
+      <h2 class="theme-title">${esc(currentTheme)}</h2>
+      ${moveTheme}
+    </div>`;
+    const refs = refsOfTheme(currentTheme);
+    if (!refs.length){
+      html += `<div class="empty">Aucune référence pour ce thème pour l'instant.</div>`;
+    } else {
+      DATA.supports.forEach(s => {
+        const list = refs.filter(r => r.support === s.nom);
+        if (!list.length) return;
+        const delSup = editMode ? `<button class="del-inline" data-delsup="${esc(s.nom)}" title="Supprimer ce support">✕</button>` : "";
+        const isOpen = editMode || openSupports.has(s.nom);
+        html += `<details class="support" data-sup="${esc(s.nom)}" ${isOpen ? "open" : ""}>
+          <summary>
+            <span class="support-dot" style="background:${s.couleur}"></span>
+            ${esc(s.nom)} <span class="support-count">(${list.length})</span>
+            ${delSup}
+            <span class="chevron">▶</span>
+          </summary>
+          <div class="cards">${list.map(r => cardHTML(r, list)).join("")}</div>
+        </details>`;
+      });
+    }
+  }
+  contentEl.innerHTML = html;
+  bindContent();
+}
+
+/* ---------- Recherche ---------- */
+function renderSearch(q){
+  const needle = q.toLowerCase();
+  const results = DATA.references.filter(r =>
+    [r.titre, r.auteur, r.date, r.apport, r.support, r.themes.join(" ")].join(" ").toLowerCase().includes(needle)
+  );
+  let html = `<h2 class="theme-title">Recherche</h2>
+    <div class="results-label">${results.length} résultat${results.length>1?"s":""} pour « ${esc(q)} »</div>`;
+  html += results.length ? results.map(r => cardHTML(r, null)).join("") : `<div class="empty">Aucune référence ne correspond.</div>`;
+  contentEl.innerHTML = html;
+  bindContent();
+}
+
+/* ---------- Formulaire d'ajout ---------- */
+function formHTML(){
+  const supOpts = DATA.supports.map(s => `<option value="${esc(s.nom)}">${esc(s.nom)}</option>`).join("");
+  const themeChecks = DATA.themes.map(t =>
+    `<label><input type="checkbox" name="fthemes" value="${esc(t)}" ${t===currentTheme?"checked":""}> ${esc(t)}</label>`).join("");
+  return `<div class="form" id="refForm">
+    <h2>Nouvelle référence</h2>
+    <label for="fTitre">Titre</label>
+    <input type="text" id="fTitre" autocomplete="off">
+    <label for="fAuteur">Auteur / réalisateur / média</label>
+    <input type="text" id="fAuteur" autocomplete="off">
+    <label for="fDate">Date (libre : année, période…)</label>
+    <input type="text" id="fDate" autocomplete="off" placeholder="ex. 1957, mars 2026, depuis 2014">
+    <label for="fSupport">Support</label>
+    <select id="fSupport">${supOpts}</select>
+    <label>Thème(s) — coche tous ceux qui s'appliquent</label>
+    <div class="checks">${themeChecks}</div>
+    <label for="fApport">Ce que cette référence apporte</label>
+    <textarea id="fApport"></textarea>
+    <div class="form-actions">
+      <button class="btn" id="btnSaveRef">Enregistrer</button>
+      <button class="btn ghost" id="btnCancelRef">Annuler</button>
+    </div>
+  </div>`;
+}
+
+/* ---------- Actions ---------- */
+function addTheme(){
+  const nom = prompt("Nom du nouveau thème :");
+  if (!nom) return;
+  const clean = nom.trim();
+  if (!clean) return;
+  if (DATA.themes.includes(clean)){ alert("Ce thème existe déjà."); return; }
+  DATA.themes.push(clean);
+  currentTheme = clean;
+  saveData(); render();
+}
+
+function moveThemeBy(delta){
+  const i = DATA.themes.indexOf(currentTheme);
+  const j = i + delta;
+  if (j < 0 || j >= DATA.themes.length) return;
+  [DATA.themes[i], DATA.themes[j]] = [DATA.themes[j], DATA.themes[i]];
+  saveData(); render();
+}
+
+function deleteTheme(){
+  const used = refsOfTheme(currentTheme).length;
+  const msg = used
+    ? `Le thème « ${currentTheme} » est utilisé par ${used} référence(s). Le supprimer le retirera de ces fiches (les fiches sans plus aucun thème seront supprimées). Continuer ?`
+    : `Supprimer le thème « ${currentTheme} » ?`;
+  if (!confirm(msg)) return;
+  DATA.references.forEach(r => { r.themes = r.themes.filter(t => t !== currentTheme); });
+  DATA.references = DATA.references.filter(r => r.themes.length > 0);
+  DATA.themes = DATA.themes.filter(t => t !== currentTheme);
+  currentTheme = DATA.themes[0] || null;
+  saveData(); render();
+}
+
+function addSupport(){
+  const nom = prompt("Nom du nouveau support :");
+  if (!nom) return;
+  const clean = nom.trim();
+  if (!clean) return;
+  if (DATA.supports.some(s => s.nom === clean)){ alert("Ce support existe déjà."); return; }
+  DATA.supports.push({ nom: clean, couleur: palette[DATA.supports.length % palette.length] });
+  saveData(); render();
+  alert(`Support « ${clean} » ajouté. Il apparaîtra dès qu'une référence l'utilisera.`);
+}
+
+function deleteSupport(nom){
+  const used = DATA.references.filter(r => r.support === nom).length;
+  if (used){ alert(`Impossible : ${used} référence(s) utilisent le support « ${nom} ». Supprime ou modifie d'abord ces références.`); return; }
+  if (!confirm(`Supprimer le support « ${nom} » ?`)) return;
+  DATA.supports = DATA.supports.filter(s => s.nom !== nom);
+  saveData(); render();
+}
+
+function deleteRef(id){
+  const ref = DATA.references.find(r => refId(r) === id);
+  if (!ref) return;
+  if (!confirm(`Supprimer la référence « ${ref.titre} » ? Elle sera retirée de tous les thèmes.`)) return;
+  DATA.references = DATA.references.filter(r => refId(r) !== id);
+  openCards.delete(id);
+  saveData(); render();
+}
+
+/* Déplace une référence vers le haut/bas parmi les fiches
+   du même support affichées dans le thème courant */
+function moveRef(id, delta){
+  const ref = DATA.references.find(x => refId(x) === id);
+  if (!ref) return;
+  const list = refsOfTheme(currentTheme).filter(r => r.support === ref.support);
+  const pos = list.findIndex(r => refId(r) === id);
+  const target = list[pos + delta];
+  if (!target) return;
+  const i = DATA.references.findIndex(r => refId(r) === id);
+  const j = DATA.references.findIndex(r => refId(r) === refId(target));
+  [DATA.references[i], DATA.references[j]] = [DATA.references[j], DATA.references[i]];
+  saveData(); render();
+}
+
+/* Modification en place d'une fiche */
+function saveEdit(id){
+  const ref = DATA.references.find(r => refId(r) === id);
+  if (!ref) return;
+  const titre = document.getElementById("eTitre").value.trim();
+  const auteur = document.getElementById("eAuteur").value.trim();
+  const date = document.getElementById("eDate").value.trim();
+  const apport = document.getElementById("eApport").value.trim();
+  if (!titre){ alert("Le titre est obligatoire."); return; }
+  ref.titre = titre;
+  ref.auteur = auteur;
+  ref.date = date;
+  ref.apport = apport;
+  const newId = refId(ref);
+  if (newId !== id){
+    if (openCards.has(id)){ openCards.delete(id); openCards.add(newId); }
+  }
+  editingRef = null;
+  saveData(); render();
+}
+
+function saveRef(){
+  const titre = document.getElementById("fTitre").value.trim();
+  const auteur = document.getElementById("fAuteur").value.trim();
+  const date = document.getElementById("fDate").value.trim();
+  const support = document.getElementById("fSupport").value;
+  const apport = document.getElementById("fApport").value.trim();
+  const themes = [...document.querySelectorAll('input[name=fthemes]:checked')].map(c => c.value);
+  if (!titre){ alert("Le titre est obligatoire."); return; }
+  if (!themes.length){ alert("Choisis au moins un thème."); return; }
+  DATA.references.push({ titre, auteur, date, support, themes, apport });
+  showForm = false;
+  saveData(); render();
+}
+
+function exportJSON(){
+  const blob = new Blob([JSON.stringify(DATA, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  const d = new Date().toISOString().slice(0,10);
+  a.download = `referentiel-culturel-${d}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function importJSON(file){
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const obj = JSON.parse(reader.result);
+      if (!obj.themes || !obj.supports || !obj.references) throw new Error();
+      if (!confirm("Remplacer toutes les données actuelles par celles du fichier ?")) return;
+      DATA = obj;
+      DATA.references.forEach(r => { if (typeof r.date !== "string") r.date = ""; delete r.importance; });
+      currentTheme = DATA.themes[0] || null;
+      saveData(); render();
+    }catch(e){ alert("Fichier invalide : il doit s'agir d'un export JSON de ce site."); }
+  };
+  reader.readAsText(file);
+}
+
+/* ---------- Liaison des événements ---------- */
+function bindContent(){
+  /* dépliage d'une fiche : bascule directe, sans redessiner la page */
+  contentEl.querySelectorAll("[data-toggle]").forEach(b => {
+    b.onclick = () => {
+      const id = b.dataset.toggle;
+      const card = b.closest(".card");
+      if (openCards.has(id)){
+        openCards.delete(id);
+        card.classList.remove("open");
+        b.setAttribute("aria-expanded", "false");
+      } else {
+        openCards.add(id);
+        card.classList.add("open");
+        b.setAttribute("aria-expanded", "true");
+      }
+    };
+  });
+  /* mémorise quelles sections support sont ouvertes */
+  contentEl.querySelectorAll("details.support").forEach(d => {
+    d.addEventListener("toggle", () => {
+      const nom = d.dataset.sup;
+      if (!nom) return;
+      d.open ? openSupports.add(nom) : openSupports.delete(nom);
+    });
+  });
+  contentEl.querySelectorAll("[data-del]").forEach(b => b.onclick = () => deleteRef(b.dataset.del));
+  contentEl.querySelectorAll("[data-editref]").forEach(b => b.onclick = () => { editingRef = b.dataset.editref; render(); });
+  contentEl.querySelectorAll("[data-saveedit]").forEach(b => b.onclick = () => saveEdit(b.dataset.saveedit));
+  contentEl.querySelectorAll("[data-canceledit]").forEach(b => b.onclick = () => { editingRef = null; render(); });
+  contentEl.querySelectorAll("[data-up]").forEach(b => b.onclick = () => moveRef(b.dataset.up, -1));
+  contentEl.querySelectorAll("[data-down]").forEach(b => b.onclick = () => moveRef(b.dataset.down, +1));
+  contentEl.querySelectorAll("[data-delsup]").forEach(b => b.onclick = e => { e.preventDefault(); e.stopPropagation(); deleteSupport(b.dataset.delsup); });
+  const g = id => document.getElementById(id);
+  if (g("btnAddRef")) g("btnAddRef").onclick = () => { showForm = true; render(); window.scrollTo({top:0}); };
+  if (g("btnAddSupport")) g("btnAddSupport").onclick = addSupport;
+  if (g("btnDelTheme")) g("btnDelTheme").onclick = deleteTheme;
+  if (g("btnThemeLeft")) g("btnThemeLeft").onclick = () => moveThemeBy(-1);
+  if (g("btnThemeRight")) g("btnThemeRight").onclick = () => moveThemeBy(+1);
+  if (g("btnExport")) g("btnExport").onclick = exportJSON;
+  if (g("btnImport")) g("btnImport").onclick = () => importFile.click();
+  if (g("btnSaveRef")) g("btnSaveRef").onclick = saveRef;
+  if (g("btnCancelRef")) g("btnCancelRef").onclick = () => { showForm = false; render(); };
+}
+
+importFile.addEventListener("change", () => {
+  if (importFile.files[0]) importJSON(importFile.files[0]);
+  importFile.value = "";
+});
+
+editToggle.onclick = () => {
+  editMode = !editMode;
+  showForm = false;
+  editingRef = null;
+  editToggle.classList.toggle("on", editMode);
+  editToggle.textContent = editMode ? "✓ Terminer" : "✎ Modifier";
+  render();
+};
+
+function render(){
+  renderTabs();
+  const q = searchEl.value.trim();
+  q.length >= 2 ? renderSearch(q) : renderTheme();
+  footerEl.textContent = `${DATA.references.length} références · ${DATA.themes.length} thèmes · ${DATA.supports.length} supports`;
+}
+
+searchEl.addEventListener("input", render);
+
+/* ---------- Panneau de synchronisation ---------- */
+const syncPanel = document.getElementById("syncPanel");
+const syncToggleBtn = document.getElementById("syncToggle");
+syncToggleBtn.onclick = () => {
+  syncPanel.classList.toggle("open");
+  if (syncPanel.classList.contains("open")){
+    document.getElementById("syncOwner").value = SYNC.owner;
+    document.getElementById("syncRepo").value = SYNC.repo;
+    document.getElementById("syncBranch").value = SYNC.branch || "main";
+    document.getElementById("syncToken").value = SYNC.token;
+    setSyncState(syncState);
+  }
+};
+document.getElementById("btnSyncSave").onclick = () => {
+  SYNC.owner = document.getElementById("syncOwner").value.trim();
+  SYNC.repo = document.getElementById("syncRepo").value.trim();
+  SYNC.branch = document.getElementById("syncBranch").value.trim() || "main";
+  SYNC.token = document.getElementById("syncToken").value.trim();
+  if (!syncConfigured()){ alert("Renseigne au minimum le propriétaire, le dépôt et le token."); return; }
+  try{ localStorage.setItem(SYNC_KEY, JSON.stringify(SYNC)); }catch(e){}
+  initSync();
+};
+document.getElementById("btnSyncOff").onclick = () => {
+  if (!confirm("Désactiver la synchronisation sur cet appareil ? (Les données du dépôt GitHub ne sont pas supprimées.)")) return;
+  SYNC = { owner:"", repo:"", branch:"main", token:"" };
+  try{ localStorage.removeItem(SYNC_KEY); }catch(e){}
+  remoteSha = null;
+  setSyncState("off");
+};
+
+applyAppearance();
+render();
+initSync();
+/* recharge les données du dépôt quand on revient sur l'onglet/l'appli */
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden && syncConfigured() && syncState !== "saving") initSync();
+});
+</script>
+</body>
+</html>
