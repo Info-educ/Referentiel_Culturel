@@ -43,6 +43,10 @@
     {
       "nom": "Musique",
       "couleur": "#8A4A1F"
+    },
+    {
+      "nom": "Citation",
+      "couleur": "#777"
     }
   ],
   "references": [
