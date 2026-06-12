@@ -51,6 +51,17 @@
   ],
   "references": [
     {
+      "titre": "Germinal",
+      "auteur": "Émile Zola",
+      "date": "1885",
+      "support": "Littérature",
+      "themes": [
+        "Économie",
+        "Humanité"
+      ],
+      "apport": "La condition ouvrière au XIXe siècle, la naissance des luttes sociales et la question du capital contre le travail."
+    },
+    {
       "titre": "Les Raisins de la colère",
       "auteur": "John Steinbeck",
       "date": "1939",
@@ -61,17 +72,6 @@
         "Humanité"
       ],
       "apport": "La Grande Dépression vue à hauteur d'une famille : crise économique, exode, dignité des plus pauvres face à un système qui les broie."
-    },
-    {
-      "titre": "Germinal",
-      "auteur": "Émile Zola",
-      "date": "1885",
-      "support": "Littérature",
-      "themes": [
-        "Économie",
-        "Humanité"
-      ],
-      "apport": "La condition ouvrière au XIXe siècle, la naissance des luttes sociales et la question du capital contre le travail."
     },
     {
       "titre": "Douze hommes en colère",
